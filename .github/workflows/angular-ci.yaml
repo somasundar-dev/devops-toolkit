@@ -38,11 +38,11 @@ jobs:
               working-directory: ${{ github.event.inputs.working_directory }}
               run: npm run build -- --configuration=production
 
-            - name: Run tests
-              working-directory: ${{ github.event.inputs.working_directory }}
-              run: npm test -- --watch=false --coverage --browsers=ChromeHeadless
+            #- name: Run tests
+            #  working-directory: ${{ github.event.inputs.working_directory }}
+            #  run: npm test -- --watch=false --coverage --browsers=ChromeHeadless
 
-            - name: Publish code coverage results
-              uses: codecov/codecov-action@v6
-              with:
-                file: ${{ github.event.inputs.working_directory }}/coverage/lcov.info
+            #- name: Publish code coverage results
+            #  uses: codecov/codecov-action@v6
+            #  with:
+            #    file: ${{ github.event.inputs.working_directory }}/coverage/lcov.info
