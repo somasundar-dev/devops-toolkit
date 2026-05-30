@@ -1,0 +1,48 @@
+name: Angular CI
+
+on:
+    workflow_call:
+        inputs:
+            node_version:
+                description: 'The Node.js version to use for the build (e.g., 16, 18, 20).'
+                required: true
+                type: string
+                default: '24'
+            working_directory:
+                description: 'The working directory for the build (relative to the repository root).'
+                required: false
+                type: string
+                default: '.'
+
+jobs:
+    build-test:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v6
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v6
+              with:
+                node-version: ${{ github.event.inputs.node_version }}
+
+            - name: Install dependencies
+              working-directory: ${{ github.event.inputs.working_directory }}
+              run: npm install
+
+            - name: Run linting
+              working-directory: ${{ github.event.inputs.working_directory }}
+              run: npm run lint
+
+            - name: Build
+              working-directory: ${{ github.event.inputs.working_directory }}
+              run: npm run build -- --configuration=production
+
+            - name: Run tests
+              working-directory: ${{ github.event.inputs.working_directory }}
+              run: npm test -- --watch=false --coverage --browsers=ChromeHeadless
+
+            - name: Publish code coverage results
+              uses: codecov/codecov-action@v6
+              with:
+                file: ${{ github.event.inputs.working_directory }}/coverage/lcov.info
